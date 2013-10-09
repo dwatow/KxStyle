@@ -2,23 +2,24 @@
 
 [General Info]
 Version=1
-LastClass=CKxStyleDoc
-LastTemplate=CDialog
+LastClass=CKxStyleView
+LastTemplate=CDaoRecordset
 NewFileInclude1=#include "stdafx.h"
 NewFileInclude2=#include "KxStyle.h"
 LastPage=0
 
-ClassCount=5
+ClassCount=6
 Class1=CKxStyleApp
 Class2=CKxStyleDoc
 Class3=CKxStyleView
 Class4=CMainFrame
 
-ResourceCount=4
+ResourceCount=3
 Resource1=IDR_CNTR_INPLACE
 Resource2=IDR_MAINFRAME
 Class5=CAboutDlg
-Resource4=IDD_ABOUTBOX
+Class6=CViewDC
+Resource3=IDD_ABOUTBOX
 
 [CLS:CKxStyleApp]
 Type=0
@@ -33,13 +34,16 @@ ImplementationFile=KxStyleDoc.cpp
 Filter=N
 BaseClass=CRichEditDoc
 VirtualFilter=DC
-LastObject=ID_FILE_OPEN
+LastObject=CKxStyleDoc
 
 [CLS:CKxStyleView]
 Type=0
 HeaderFile=KxStyleView.h
 ImplementationFile=KxStyleView.cpp
 Filter=C
+BaseClass=CScrollView
+VirtualFilter=VWC
+LastObject=CKxStyleView
 
 
 [CLS:CMainFrame]
@@ -163,4 +167,17 @@ Command6=ID_EDIT_PASTE
 Command7=ID_FILE_PRINT
 Command8=ID_APP_ABOUT
 CommandCount=8
+
+[CLS:CViewDC]
+Type=0
+HeaderFile=ViewDC.h
+ImplementationFile=ViewDC.cpp
+BaseClass=CDaoRecordset
+Filter=N
+VirtualFilter=x
+
+[DB:CViewDC]
+DB=1
+DBType=DAO
+ColumnCount=0
 

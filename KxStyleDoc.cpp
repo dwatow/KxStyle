@@ -5,7 +5,6 @@
 #include "KxStyle.h"
 
 #include "KxStyleDoc.h"
-#include "CntrItem.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -16,16 +15,16 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CKxStyleDoc
 
-IMPLEMENT_DYNCREATE(CKxStyleDoc, CRichEditDoc)
+IMPLEMENT_DYNCREATE(CKxStyleDoc, CDocument)
 
-BEGIN_MESSAGE_MAP(CKxStyleDoc, CRichEditDoc)
+BEGIN_MESSAGE_MAP(CKxStyleDoc, CDocument)
 	//{{AFX_MSG_MAP(CKxStyleDoc)
 	ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
 	//}}AFX_MSG_MAP
 	// Enable default OLE container implementation
-	ON_UPDATE_COMMAND_UI(ID_OLE_EDIT_LINKS, CRichEditDoc::OnUpdateEditLinksMenu)
-	ON_COMMAND(ID_OLE_EDIT_LINKS, CRichEditDoc::OnEditLinks)
-	ON_UPDATE_COMMAND_UI_RANGE(ID_OLE_VERB_FIRST, ID_OLE_VERB_LAST, CRichEditDoc::OnUpdateObjectVerbMenu)
+// 	ON_UPDATE_COMMAND_UI(ID_OLE_EDIT_LINKS, CDocument::OnUpdateEditLinksMenu)
+// 	ON_COMMAND(ID_OLE_EDIT_LINKS, CDocument::OnEditLinks)
+// 	ON_UPDATE_COMMAND_UI_RANGE(ID_OLE_VERB_FIRST, ID_OLE_VERB_LAST, CDocument::OnUpdateObjectVerbMenu)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -43,7 +42,7 @@ CKxStyleDoc::~CKxStyleDoc()
 
 BOOL CKxStyleDoc::OnNewDocument()
 {
-	if (!CRichEditDoc::OnNewDocument())
+	if (!CDocument::OnNewDocument())
 		return FALSE;
 
 	// TODO: add reinitialization code here
@@ -52,11 +51,11 @@ BOOL CKxStyleDoc::OnNewDocument()
 	return TRUE;
 }
 
-CRichEditCntrItem* CKxStyleDoc::CreateClientItem(REOBJECT* preo) const
-{
-	// cast away constness of this
-	return new CKxStyleCntrItem(preo, (CKxStyleDoc*) this);
-}
+// CRichEditCntrItem* CKxStyleDoc::CreateClientItem(REOBJECT* preo) const
+// {
+// 	// cast away constness of this
+// 	return new CKxStyleCntrItem(preo, (CKxStyleDoc*) this);
+// }
 
 
 
@@ -74,10 +73,10 @@ void CKxStyleDoc::Serialize(CArchive& ar)
 		// TODO: add loading code here
 	}
 
-	// Calling the base class CRichEditDoc enables serialization
+	// Calling the base class CDocument enables serialization
 	//  of the container document's COleClientItem objects.
-	// TODO: set CRichEditDoc::m_bRTF = FALSE if you are serializing as text
-	CRichEditDoc::Serialize(ar);
+	// TODO: set CDocument::m_bRTF = FALSE if you are serializing as text
+	CDocument::Serialize(ar);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -86,12 +85,12 @@ void CKxStyleDoc::Serialize(CArchive& ar)
 #ifdef _DEBUG
 void CKxStyleDoc::AssertValid() const
 {
-	CRichEditDoc::AssertValid();
+	CDocument::AssertValid();
 }
 
 void CKxStyleDoc::Dump(CDumpContext& dc) const
 {
-	CRichEditDoc::Dump(dc);
+	CDocument::Dump(dc);
 }
 #endif //_DEBUG
 
@@ -106,4 +105,12 @@ void CKxStyleDoc::OnFileOpen()
 
 	CFileException fx;
 	fileCppCode.Open(openFile.GetPathName(), fx);
+	fileCppCode.oTxtData(dataCppCode);
+
+	UpdateAllViews(NULL);
+}
+
+void CKxStyleDoc::oData(std::vector<CString>& vCode)
+{
+	vCode = dataCppCode;
 }

@@ -5,8 +5,12 @@
 #include "KxStyle.h"
 
 #include "KxStyleDoc.h"
-#include "CntrItem.h"
 #include "KxStyleView.h"
+#include "MainFrm.h"
+
+#include "ViewDC.h"
+
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -17,86 +21,43 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CKxStyleView
 
-IMPLEMENT_DYNCREATE(CKxStyleView, CRichEditView)
+IMPLEMENT_DYNCREATE(CKxStyleView, CScrollView)
 
-BEGIN_MESSAGE_MAP(CKxStyleView, CRichEditView)
+BEGIN_MESSAGE_MAP(CKxStyleView, CScrollView)
 	//{{AFX_MSG_MAP(CKxStyleView)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-		//    DO NOT EDIT what you see in these blocks of generated code!
-	ON_WM_DESTROY()
 	//}}AFX_MSG_MAP
 	// Standard printing commands
-	ON_COMMAND(ID_FILE_PRINT, CRichEditView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_DIRECT, CRichEditView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_PREVIEW, CRichEditView::OnFilePrintPreview)
+
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CKxStyleView construction/destruction
 
-CKxStyleView::CKxStyleView()
-{
-	// TODO: add construction code here
+CKxStyleView::CKxStyleView(){}
+CKxStyleView::~CKxStyleView(){}
 
-}
-
-CKxStyleView::~CKxStyleView()
-{
-}
-
-BOOL CKxStyleView::PreCreateWindow(CREATESTRUCT& cs)
-{
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
-
-	return CRichEditView::PreCreateWindow(cs);
-}
 
 void CKxStyleView::OnInitialUpdate()
 {
-	CRichEditView::OnInitialUpdate();
-
-
-	// Set the printing margins (720 twips = 1/2 inch).
-	SetMargins(CRect(720, 720, 720, 720));
+    CScrollView::OnInitialUpdate();
+    CSize sizeTotal;
+    // TODO: calculate the total size of this view
+    sizeTotal.cx = GetDeviceScrollPosition().x;
+    sizeTotal.cy = GetDeviceScrollPosition().y;
+    SetScrollSizes(MM_TEXT, sizeTotal);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CKxStyleView printing
-
-BOOL CKxStyleView::OnPreparePrinting(CPrintInfo* pInfo)
-{
-	// default preparation
-	return DoPreparePrinting(pInfo);
-}
-
-
-void CKxStyleView::OnDestroy()
-{
-	// Deactivate the item on destruction; this is important
-	// when a splitter view is being used.
-   CRichEditView::OnDestroy();
-   COleClientItem* pActiveItem = GetDocument()->GetInPlaceActiveItem(this);
-   if (pActiveItem != NULL && pActiveItem->GetActiveView() == this)
-   {
-      pActiveItem->Deactivate();
-      ASSERT(GetDocument()->GetInPlaceActiveItem(this) == NULL);
-   }
-}
-
-
-/////////////////////////////////////////////////////////////////////////////
-// CKxStyleView diagnostics
+//////////////////////////////////////////////////////////////////////////
 
 #ifdef _DEBUG
 void CKxStyleView::AssertValid() const
 {
-	CRichEditView::AssertValid();
+	CScrollView::AssertValid();
 }
 
 void CKxStyleView::Dump(CDumpContext& dc) const
 {
-	CRichEditView::Dump(dc);
+	CScrollView::Dump(dc);
 }
 
 CKxStyleDoc* CKxStyleView::GetDocument() // non-debug version is inline
@@ -108,3 +69,37 @@ CKxStyleDoc* CKxStyleView::GetDocument() // non-debug version is inline
 
 /////////////////////////////////////////////////////////////////////////////
 // CKxStyleView message handlers
+
+void CKxStyleView::TabtoSpace(int nSpace)
+{
+	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
+	{
+// 		itor->TrimRight();
+// 		itor->TrimLeft();
+	}
+}
+
+void CKxStyleView::OnDraw(CDC* pDC) 
+{
+	// TODO: Add your specialized code here and/or call the base class
+	GetDocument()->oData(Code);
+	
+	CViewDC DC(pDC);
+ 	DC.TextOut(Code);
+}
+
+
+BOOL CKxStyleView::PreTranslateMessage(MSG* pMsg) 
+{
+	// TODO: Add your specialized code here and/or call the base class
+	if (pMsg->message == WM_KEYDOWN)
+    {
+        switch(pMsg->wParam)
+        {
+			case VK_F5:     GetDocument()->UpdateAllViews(NULL); break;
+        }
+        return TRUE;
+    }
+
+	return CScrollView::PreTranslateMessage(pMsg);
+}

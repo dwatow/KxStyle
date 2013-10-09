@@ -8,11 +8,17 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+#include "KxStyleDoc.h"
+#include "MainFrm.h"
 
-class CKxStyleCntrItem;
+#include "ViewDC.h"
 
-class CKxStyleView : public CRichEditView
+class CKxStyleView : public CScrollView
 {
+	std::vector<CString> Code;
+private:
+	void TabtoSpace(int nSpace);
+
 protected: // create from serialization only
 	CKxStyleView();
 	DECLARE_DYNCREATE(CKxStyleView)
@@ -28,10 +34,10 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CKxStyleView)
 	public:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual void OnDraw(CDC* pDC);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	protected:
 	virtual void OnInitialUpdate(); // called first time after construct
-	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -47,9 +53,6 @@ protected:
 // Generated message map functions
 protected:
 	//{{AFX_MSG(CKxStyleView)
-		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	afx_msg void OnDestroy();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

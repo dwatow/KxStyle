@@ -11,7 +11,7 @@
 
 #include "TxtFile.h"
 
-class CKxStyleDoc : public CRichEditDoc
+class CKxStyleDoc : public CDocument
 {
 	CTxtFile fileCppCode;
 	TxtStrData dataCppCode;
@@ -32,10 +32,11 @@ public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
 	//}}AFX_VIRTUAL
-	virtual CRichEditCntrItem* CreateClientItem(REOBJECT* preo) const;
+// 	virtual CRichEditCntrItem* CreateClientItem(REOBJECT* preo) const;
 
 // Implementation
 public:
+	void oData(std::vector<CString>&);
 	virtual ~CKxStyleDoc();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
