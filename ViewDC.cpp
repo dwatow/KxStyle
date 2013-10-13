@@ -21,7 +21,7 @@ CViewDC::CViewDC(CDC* pDC):pMainDC(pDC), textHight(16)
 	nDC = pMainDC->SaveDC();
 
 
-   font.CreatePointFont(100,"Monaco"); 
+   font.CreatePointFont(80,"Monaco"); 
    oldFont = pMainDC->SelectObject(&font);
 }
 
@@ -35,11 +35,17 @@ CViewDC::~CViewDC()
 
 void CViewDC::TextOut(std::vector<CString>& Code)
 {
-
 	int indexLine = 0;
+	CString strTest;
+
 	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
 	{
-		pMainDC->TextOut(0, indexLine*textHight, Code.at(indexLine));
+#ifdef _DEBUG
+		strTest.Format("\"%s\"", Code.at(indexLine));
+#else
+		strTest.Format("%s", Code.at(indexLine));
+#endif
+		pMainDC->TextOut(0, indexLine*textHight, strTest);
 		++indexLine;
 	}
 }

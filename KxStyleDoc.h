@@ -13,7 +13,6 @@
 
 class CKxStyleDoc : public CDocument
 {
-	CTxtFile fileCppCode;
 	TxtStrData dataCppCode;
 protected: // create from serialization only
 	CKxStyleDoc();

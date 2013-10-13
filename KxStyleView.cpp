@@ -70,20 +70,85 @@ CKxStyleDoc* CKxStyleView::GetDocument() // non-debug version is inline
 /////////////////////////////////////////////////////////////////////////////
 // CKxStyleView message handlers
 
-void CKxStyleView::TabtoSpace(int nSpace)
+// int CKxStyleView::leftChar(std::vector<CString>::iterator itor, char ch)
+// {
+// 	TCHAR tCh = ch;
+// 	for (int indexSapce = 0; indexSapce < itor->GetLength(); ++indexSapce)
+// 	{
+// 		if (itor->GetAt(indexSapce) != tCh)
+// 			return indexSapce;
+// 		else;
+// 	}
+// 
+// 	return 0;
+// }
+void CKxStyleView::removeIndention()
 {
 	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
 	{
-// 		itor->TrimRight();
-// 		itor->TrimLeft();
+		itor->TrimLeft();  //remove spaceline and startup '\t', space
+		itor->TrimRight();  //remove "...;  " to "...;"
 	}
+}
+
+void CKxStyleView::exchangeVecStr(std::vector<CString>& vBefore, std::vector<CString>& vAfter)
+{
+	//remove
+	vBefore.clear();
+	vBefore = vAfter;
+	vAfter.clear();
+}
+
+void CKxStyleView::removeSpaceLine()
+{
+	std::vector<CString> NoSpaceLineCode;
+	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
+		if (!itor->IsEmpty())
+			NoSpaceLineCode.push_back(*itor);
+
+	exchangeVecStr(Code, NoSpaceLineCode);
+}
+
+void CKxStyleView::findBraces(char chBraces)
+{
+	std::vector<CString> pressedCode;
+	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
+	{
+		int iBraces = itor->Find(chBraces);
+		if (iBraces != -1)  //¦³§ä¨ì'{'©M'}'
+		{
+			switch(chBraces)
+			{
+			case '{':
+				pressedCode.push_back(itor->Left(iBraces));  //other code
+				pressedCode.push_back(itor->Mid(iBraces));
+				break;
+			case '}':
+				if (iBraces != 0)
+					pressedCode.push_back(itor->Left(iBraces));
+				pressedCode.push_back(itor->Mid(iBraces));  //other code
+				break;
+			default:
+				ASSERT(0);
+			}
+		} 
+		else
+		{
+			pressedCode.push_back(*itor);
+		}
+	}
+	exchangeVecStr(Code, pressedCode);
 }
 
 void CKxStyleView::OnDraw(CDC* pDC) 
 {
 	// TODO: Add your specialized code here and/or call the base class
 	GetDocument()->oData(Code);
-	
+	removeIndention();
+	removeSpaceLine();
+	findBraces('{');
+	findBraces('}');
+
 	CViewDC DC(pDC);
  	DC.TextOut(Code);
 }

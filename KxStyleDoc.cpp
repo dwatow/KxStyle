@@ -103,6 +103,7 @@ void CKxStyleDoc::OnFileOpen()
 	CFileDialog openFile(TRUE);
 	openFile.DoModal();
 
+	CTxtFile fileCppCode;
 	CFileException fx;
 	fileCppCode.Open(openFile.GetPathName(), fx);
 	fileCppCode.oTxtData(dataCppCode);

@@ -17,7 +17,12 @@ class CKxStyleView : public CScrollView
 {
 	std::vector<CString> Code;
 private:
-	void TabtoSpace(int nSpace);
+// 	int  leftChar(std::vector<CString>::iterator itor, char ch);
+	void exchangeVecStr(std::vector<CString>&, std::vector<CString>&);
+	void removeIndention();
+	void removeSpaceLine();
+	void findBraces(char braces);
+
 
 protected: // create from serialization only
 	CKxStyleView();
