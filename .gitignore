@@ -77,6 +77,8 @@ build/
 *.pidb
 *.log
 *.scc
+#when open prject will change file
+*.opt
 
 # Visual C++ cache files
 ipch/

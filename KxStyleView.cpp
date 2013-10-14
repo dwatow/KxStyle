@@ -197,13 +197,14 @@ void CKxStyleView::addIndention(int nSpace)
 	CString currentCode;
 	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
 	{
-		if (itor->Find('{') == 0)
-			Lv++;
 		if (itor->Find('}') == 0)
 			Lv--;		
 
 		currentCode.Format("%s%s", remakeIndention(Lv, nSpace), *itor);
 		pressingCode.push_back(currentCode);
+
+		if (itor->Find('{') == 0)
+			Lv++;
 	}
 	exchangeVecStr(Code, pressingCode);
 }
