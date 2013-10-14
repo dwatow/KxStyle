@@ -21,7 +21,12 @@ private:
 	void exchangeVecStr(std::vector<CString>&, std::vector<CString>&);
 	void removeIndention();
 	void removeSpaceLine();
-	void findBraces(char braces);
+	void sortOutBraces(std::vector<CString>&, CString linecode, const char&);
+	void findBraces();
+	void findLBraces(std::vector<CString>&, CString);
+	void findRBraces(std::vector<CString>&, CString);
+	CString remakeIndention(int Lv, int LengthSpace);
+	void addIndention(int nSpace = 4);
 
 
 protected: // create from serialization only

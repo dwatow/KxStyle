@@ -6,6 +6,29 @@
 --------------------Configuration: KxStyle - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
+Creating temporary file "C:\Users\1004066\AppData\Local\Temp\RSP2D.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Debug/KxStyle.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\github\KxStyle\KxStyleView.cpp"
+]
+Creating command line "cl.exe @C:\Users\1004066\AppData\Local\Temp\RSP2D.tmp" 
+Creating temporary file "C:\Users\1004066\AppData\Local\Temp\RSP2E.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/KxStyle.pdb" /debug /machine:I386 /out:"Debug/KxStyle.exe" /pdbtype:sept 
+.\Debug\KxStyle.obj
+.\Debug\KxStyleDoc.obj
+.\Debug\KxStyleView.obj
+.\Debug\MainFrm.obj
+.\Debug\StdAfx.obj
+.\Debug\TxtFile.obj
+.\Debug\ViewDC.obj
+.\Debug\KxStyle.res
+]
+Creating command line "link.exe @C:\Users\1004066\AppData\Local\Temp\RSP2E.tmp"
+<h3>Output Window</h3>
+Compiling...
+KxStyleView.cpp
+Linking...
 
 
 

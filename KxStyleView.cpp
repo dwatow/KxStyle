@@ -109,35 +109,103 @@ void CKxStyleView::removeSpaceLine()
 	exchangeVecStr(Code, NoSpaceLineCode);
 }
 
-void CKxStyleView::findBraces(char chBraces)
+void CKxStyleView::findLBraces(std::vector<CString>& codePressing, CString codeLine)
 {
-	std::vector<CString> pressedCode;
-	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
-	{
-		int iBraces = itor->Find(chBraces);
-		if (iBraces != -1)  //有找到'{'和'}'
+		int iBraces = codeLine.Find('{');
+// 		CString temp(codeLine.Mid(iBraces));
+// 		temp.Find()
+		if (iBraces != -1)  //找到'{'
 		{
-			switch(chBraces)
+			if (iBraces != 0)  //normal case
 			{
-			case '{':
-				pressedCode.push_back(itor->Left(iBraces));  //other code
-				pressedCode.push_back(itor->Mid(iBraces));
-				break;
-			case '}':
-				if (iBraces != 0)
-					pressedCode.push_back(itor->Left(iBraces));
-				pressedCode.push_back(itor->Mid(iBraces));  //other code
-				break;
-			default:
-				ASSERT(0);
+				codePressing.push_back(codeLine.Left(iBraces));
+// 				codePressing.push_back(codeLine.Mid(iBraces));  //
+				findLBraces(codePressing, codeLine.Mid(iBraces));
+			}
+			else if(codeLine.GetLength() > 1)  //"{..."
+			{
+				codePressing.push_back(codeLine.Left(iBraces+1));
+// 				codePressing.push_back(codeLine.Mid(iBraces+1));  //
+				findLBraces(codePressing, codeLine.Mid(iBraces+1));
+			}
+			else // "{"
+			{
+				codePressing.push_back(codeLine.Mid(iBraces));  //
 			}
 		} 
 		else
 		{
-			pressedCode.push_back(*itor);
+			codePressing.push_back(codeLine);  //all of line
+		}
+}
+
+void CKxStyleView::findRBraces(std::vector<CString>& codePressing, CString codeLine)
+{
+	int iBraces = codeLine.Find('}');
+	if (iBraces != -1)  //找到'{'
+	{
+		if (iBraces != 0)  //normal case
+		{
+			//codePressing.push_back(codeLine.Left(iBraces));
+			findRBraces(codePressing, codeLine.Left(iBraces));
+			codePressing.push_back(codeLine.Mid(iBraces));
+		}
+		else if(codeLine.GetLength() > 1)  //"{..."
+		{
+			//codePressing.push_back(codeLine.Left(iBraces+1));
+			findRBraces(codePressing, codeLine.Left(iBraces+1));
+			codePressing.push_back(codeLine.Mid(iBraces+1));
+		}
+		else // "{"
+		{
+			codePressing.push_back(codeLine.Mid(iBraces));
 		}
 	}
+	else
+	{
+		codePressing.push_back(codeLine);  //all of line
+	}
+}
+
+void CKxStyleView::findBraces()
+{
+	std::vector<CString> pressedCode;
+	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
+		findLBraces(pressedCode, *itor);
 	exchangeVecStr(Code, pressedCode);
+
+	pressedCode.clear();
+	for (itor = Code.begin(); itor != Code.end(); ++itor)
+ 		findRBraces(pressedCode, *itor);
+	exchangeVecStr(Code, pressedCode);
+}
+
+CString CKxStyleView::remakeIndention(int Lv, int LengthSpace)
+{
+	CString spaceIndention;
+
+	for(int i = 0; i < Lv*LengthSpace; ++i)
+		spaceIndention += " ";
+
+	return spaceIndention;
+}
+
+void CKxStyleView::addIndention(int nSpace)
+{
+	int Lv = 0;
+	std::vector<CString> pressingCode;
+	CString currentCode;
+	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
+	{
+		if (itor->Find('{') == 0)
+			Lv++;
+		if (itor->Find('}') == 0)
+			Lv--;		
+
+		currentCode.Format("%s%s", remakeIndention(Lv, nSpace), *itor);
+		pressingCode.push_back(currentCode);
+	}
+	exchangeVecStr(Code, pressingCode);
 }
 
 void CKxStyleView::OnDraw(CDC* pDC) 
@@ -146,8 +214,9 @@ void CKxStyleView::OnDraw(CDC* pDC)
 	GetDocument()->oData(Code);
 	removeIndention();
 	removeSpaceLine();
-	findBraces('{');
-	findBraces('}');
+	findBraces();
+	removeIndention();
+	addIndention();
 
 	CViewDC DC(pDC);
  	DC.TextOut(Code);
@@ -168,3 +237,4 @@ BOOL CKxStyleView::PreTranslateMessage(MSG* pMsg)
 
 	return CScrollView::PreTranslateMessage(pMsg);
 }
+
