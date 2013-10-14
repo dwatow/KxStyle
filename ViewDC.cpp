@@ -40,11 +40,8 @@ void CViewDC::TextOut(std::vector<CString>& Code)
 
 	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
 	{
-// #ifdef _DEBUG
-// 		strTest.Format("\"%s\"", Code.at(indexLine));
-// #else
+		*itor += "\n";
 		strTest.Format("%s", Code.at(indexLine));
-// #endif
 		pMainDC->TextOut(0, indexLine*textHight, strTest);
 		++indexLine;
 	}

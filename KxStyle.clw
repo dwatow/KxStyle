@@ -2,7 +2,7 @@
 
 [General Info]
 Version=1
-LastClass=CKxStyleView
+LastClass=CKxStyleDoc
 LastTemplate=CDaoRecordset
 NewFileInclude1=#include "stdafx.h"
 NewFileInclude2=#include "KxStyle.h"
@@ -14,12 +14,13 @@ Class2=CKxStyleDoc
 Class3=CKxStyleView
 Class4=CMainFrame
 
-ResourceCount=3
-Resource1=IDR_CNTR_INPLACE
-Resource2=IDR_MAINFRAME
+ResourceCount=4
+Resource1=IDR_MAINFRAME
+Resource2=IDD_ABOUTBOX
 Class5=CAboutDlg
 Class6=CViewDC
-Resource3=IDD_ABOUTBOX
+Resource3=IDR_CNTR_INPLACE
+Resource4=IDD_DIALOG1
 
 [CLS:CKxStyleApp]
 Type=0
@@ -32,9 +33,9 @@ Type=0
 HeaderFile=KxStyleDoc.h
 ImplementationFile=KxStyleDoc.cpp
 Filter=N
-BaseClass=CRichEditDoc
+BaseClass=CDocument
 VirtualFilter=DC
-LastObject=CKxStyleDoc
+LastObject=ID_FILE_SAVE_AS
 
 [CLS:CKxStyleView]
 Type=0
@@ -180,4 +181,11 @@ VirtualFilter=x
 DB=1
 DBType=DAO
 ColumnCount=0
+
+[DLG:IDD_DIALOG1]
+Type=1
+Class=?
+ControlCount=2
+Control1=IDOK,button,1342242817
+Control2=IDCANCEL,button,1342242816
 

@@ -35,6 +35,7 @@ public:
 
 // Implementation
 public:
+	void iData(std::vector<CString>&);
 	void oData(std::vector<CString>&);
 	virtual ~CKxStyleDoc();
 #ifdef _DEBUG
@@ -48,6 +49,7 @@ protected:
 protected:
 	//{{AFX_MSG(CKxStyleDoc)
 	afx_msg void OnFileOpen();
+	afx_msg void OnFileSaveAs();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

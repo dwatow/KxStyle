@@ -153,6 +153,10 @@ SOURCE=.\StdAfx.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\syntaxFor.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\TxtFile.h
 # End Source File
 # Begin Source File

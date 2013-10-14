@@ -18,15 +18,29 @@ class CKxStyleView : public CScrollView
 	std::vector<CString> Code;
 private:
 // 	int  leftChar(std::vector<CString>::iterator itor, char ch);
-	void exchangeVecStr(std::vector<CString>&, std::vector<CString>&);
-	void removeIndention();
-	void removeSpaceLine();
-	void sortOutBraces(std::vector<CString>&, CString linecode, const char&);
-	void findBraces();
+	void exchangeVecStr(std::vector<CString>&, std::vector<CString>&);  //交換
+
+	//移除舊的coding style
+	void removeIndention(); //移除前面和後面的空白和'\t'
+	void removeSpaceLine(); //移除只有空白的一行
+
+	//移除分號
+	void singleSemicolon();   //移除只有分號的一行
+	void multipleSemicolon(); //移除只有分號的一行
+	void removeSemicolon();
+
+	//移動大括號
+// 	void sortOutBraces(std::vector<CString>&, CString linecode, const char&);
+	void findBraces();                                 //重新放置大括號
 	void findLBraces(std::vector<CString>&, CString);
 	void findRBraces(std::vector<CString>&, CString);
-	CString remakeIndention(int Lv, int LengthSpace);
-	void addIndention(int nSpace = 4);
+
+	void sortOutForIf();
+	//加上縮排
+	void addIndention(int nSpace = 4);             //縮排設定
+	CString remakeIndention(int Lv, int LengthSpace);  //重建縮排
+
+// 	removeOneLineInIndent
 
 
 protected: // create from serialization only

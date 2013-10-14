@@ -20,6 +20,7 @@ IMPLEMENT_DYNCREATE(CKxStyleDoc, CDocument)
 BEGIN_MESSAGE_MAP(CKxStyleDoc, CDocument)
 	//{{AFX_MSG_MAP(CKxStyleDoc)
 	ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
+	ON_COMMAND(ID_FILE_SAVE_AS, OnFileSaveAs)
 	//}}AFX_MSG_MAP
 	// Enable default OLE container implementation
 // 	ON_UPDATE_COMMAND_UI(ID_OLE_EDIT_LINKS, CDocument::OnUpdateEditLinksMenu)
@@ -108,10 +109,31 @@ void CKxStyleDoc::OnFileOpen()
 	fileCppCode.Open(openFile.GetPathName(), fx);
 	fileCppCode.oTxtData(dataCppCode);
 
+	SetTitle(openFile.GetFileName());
+
 	UpdateAllViews(NULL);
 }
 
 void CKxStyleDoc::oData(std::vector<CString>& vCode)
 {
 	vCode = dataCppCode;
+}
+
+void CKxStyleDoc::iData(std::vector<CString>& vCode)
+{
+	dataCppCode = vCode;
+}
+
+void CKxStyleDoc::OnFileSaveAs() 
+{
+	// TODO: Add your command handler code here
+	CFileDialog saveAsFile(FALSE);
+	saveAsFile.DoModal();
+	
+	CTxtFile fileCppCode;
+	CFileException fx;
+	fileCppCode.Save(saveAsFile.GetPathName(), fx);
+	fileCppCode.iTxtData(dataCppCode);
+	
+	UpdateAllViews(NULL);	
 }

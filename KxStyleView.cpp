@@ -9,7 +9,7 @@
 #include "MainFrm.h"
 
 #include "ViewDC.h"
-
+#include "syntaxFor.h"
 
 
 #ifdef _DEBUG
@@ -101,15 +101,47 @@ void CKxStyleView::exchangeVecStr(std::vector<CString>& vBefore, std::vector<CSt
 
 void CKxStyleView::removeSpaceLine()
 {
-	std::vector<CString> NoSpaceLineCode;
+	std::vector<CString> processingCode;
 	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
 		if (!itor->IsEmpty())
-			NoSpaceLineCode.push_back(*itor);
+			processingCode.push_back(*itor);
 
-	exchangeVecStr(Code, NoSpaceLineCode);
+	exchangeVecStr(Code, processingCode);
 }
 
-void CKxStyleView::findLBraces(std::vector<CString>& codePressing, CString codeLine)
+void CKxStyleView::singleSemicolon()
+{
+	std::vector<CString> processingCode;
+	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
+	{
+		if (itor->GetLength() != 1 || *itor != ';')
+			processingCode.push_back(*itor);
+	}
+	exchangeVecStr(Code, processingCode);
+}
+
+void CKxStyleView::multipleSemicolon()
+{
+	std::vector<CString> processingCode;
+	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
+	{
+		int indexSemicolon;
+
+		//§ä¨ì';'
+		indexSemicolon = itor->Find(";");
+		processingCode.push_back(itor->Left(indexSemicolon));
+		processingCode.push_back(itor->Left(indexSemicolon+1));
+	}
+	exchangeVecStr(Code, processingCode);
+}
+
+void CKxStyleView::removeSemicolon()
+{
+//	multipleSemicolon();
+	singleSemicolon();
+}
+
+void CKxStyleView::findLBraces(std::vector<CString>& processingCode, CString codeLine)
 {
 		int iBraces = codeLine.Find('{');
 // 		CString temp(codeLine.Mid(iBraces));
@@ -118,59 +150,60 @@ void CKxStyleView::findLBraces(std::vector<CString>& codePressing, CString codeL
 		{
 			if (iBraces != 0)  //normal case
 			{
-				codePressing.push_back(codeLine.Left(iBraces));
-// 				codePressing.push_back(codeLine.Mid(iBraces));  //
-				findLBraces(codePressing, codeLine.Mid(iBraces));
+				processingCode.push_back(codeLine.Left(iBraces));
+// 				processingCode.push_back(codeLine.Mid(iBraces));  //
+				findLBraces(processingCode, codeLine.Mid(iBraces));
 			}
 			else if(codeLine.GetLength() > 1)  //"{..."
 			{
-				codePressing.push_back(codeLine.Left(iBraces+1));
-// 				codePressing.push_back(codeLine.Mid(iBraces+1));  //
-				findLBraces(codePressing, codeLine.Mid(iBraces+1));
+				processingCode.push_back(codeLine.Left(iBraces+1));
+// 				processingCode.push_back(codeLine.Mid(iBraces+1));  //
+				findLBraces(processingCode, codeLine.Mid(iBraces+1));
 			}
 			else // "{"
 			{
-				codePressing.push_back(codeLine.Mid(iBraces));  //
+				processingCode.push_back(codeLine.Mid(iBraces));  //
 			}
 		} 
 		else
 		{
-			codePressing.push_back(codeLine);  //all of line
+			processingCode.push_back(codeLine);  //all of line
 		}
 }
 
-void CKxStyleView::findRBraces(std::vector<CString>& codePressing, CString codeLine)
+void CKxStyleView::findRBraces(std::vector<CString>& processingCode, CString codeLine)
 {
 	int iBraces = codeLine.Find('}');
 	if (iBraces != -1)  //§ä¨ì'{'
 	{
 		if (iBraces != 0)  //normal case
 		{
-			//codePressing.push_back(codeLine.Left(iBraces));
-			findRBraces(codePressing, codeLine.Left(iBraces));
-			codePressing.push_back(codeLine.Mid(iBraces));
+			//processingCode.push_back(codeLine.Left(iBraces));
+			findRBraces(processingCode, codeLine.Left(iBraces));
+			processingCode.push_back(codeLine.Mid(iBraces));
 		}
 		else if(codeLine.GetLength() > 1)  //"{..."
 		{
-			//codePressing.push_back(codeLine.Left(iBraces+1));
-			findRBraces(codePressing, codeLine.Left(iBraces+1));
-			codePressing.push_back(codeLine.Mid(iBraces+1));
+			//processingCode.push_back(codeLine.Left(iBraces+1));
+			findRBraces(processingCode, codeLine.Left(iBraces+1));
+			processingCode.push_back(codeLine.Mid(iBraces+1));
 		}
 		else // "{"
 		{
-			codePressing.push_back(codeLine.Mid(iBraces));
+			processingCode.push_back(codeLine.Mid(iBraces));
 		}
 	}
 	else
 	{
-		codePressing.push_back(codeLine);  //all of line
+		processingCode.push_back(codeLine);  //all of line
 	}
 }
 
 void CKxStyleView::findBraces()
 {
 	std::vector<CString> pressedCode;
-	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
+	std::vector<CString>::iterator itor;
+	for (itor = Code.begin(); itor != Code.end(); ++itor)
 		findLBraces(pressedCode, *itor);
 	exchangeVecStr(Code, pressedCode);
 
@@ -209,18 +242,51 @@ void CKxStyleView::addIndention(int nSpace)
 	exchangeVecStr(Code, pressingCode);
 }
 
+void CKxStyleView::sortOutForIf()
+{
+	std::vector<CString> pressingCode;
+	for (std::vector<CString>::iterator itor = Code.begin(); itor != Code.end(); ++itor)
+	{
+		if (( itor->Find("for") != -1) || 
+			( (itor->Find("if") != -1) < (itor->Find("else") != -1)) )
+			pressingCode.push_back("");
+
+		pressingCode.push_back(*itor);
+	}
+	exchangeVecStr(Code, pressingCode);
+}
+
 void CKxStyleView::OnDraw(CDC* pDC) 
 {
 	// TODO: Add your specialized code here and/or call the base class
+
+	// Loading code
 	GetDocument()->oData(Code);
+
+	//remove codeing style
 	removeIndention();
 	removeSpaceLine();
+
+
+	//start kxStyle
+	//--------------
+	//1. move '{' and '}'
 	findBraces();
 	removeIndention();
-	addIndention();
 
+	//syntaxFor TestObj(Code.begin(), Code.end());
+
+	//2. remove ; in one line
+ 	removeSemicolon();
+	//2. remove { ; }
+	//removeOneLineInIndent();
+	sortOutForIf();
+	//3. add "Tab"
+	addIndention();
+/**/
 	CViewDC DC(pDC);
  	DC.TextOut(Code);
+	GetDocument()->iData(Code);
 }
 
 
