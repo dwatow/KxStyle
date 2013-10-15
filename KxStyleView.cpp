@@ -141,40 +141,86 @@ void CKxStyleView::removeSemicolon()
 	singleSemicolon();
 }
 
+BOOL CKxStyleView::IsCtrlItemInit(const CString& line)
+{
+	//AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem
+	//});
+	int iSyntaxBegin = line.Find("AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem");
+	int iSyntaxEnd   = line.Find("});");
+
+	if ((iSyntaxBegin != -1) || (iSyntaxEnd != -1)) //场常т
+	{
+		return TRUE;
+	}
+	else
+		return FALSE;
+}
+BOOL CKxStyleView::IsStringFormat(const CString& line)
+{
+	int iFor = line.Find("String::Format");
+	int iLBraces = line.Find('{');
+	int iRBraces = line.Find('}');
+	if ( ((iFor != -1) && (iLBraces != -1) && (iRBraces != -1)) && //场常т
+		 (iFor < iLBraces) && 
+		 (iLBraces < iRBraces) )
+	{
+		return TRUE;
+	}
+	else
+		return FALSE;
+}
+
+BOOL CKxStyleView::IsComment(const CString& line)
+{
+	if (line.Find("//") == 0)
+		IsInComment = TRUE;
+	else
+	{
+		if (line.Find("/*") != -1)
+			IsInComment = TRUE;
+		if (line.Find("*/") != -1)
+			IsInComment = FALSE;
+		else
+			IsInComment = FALSE;
+
+	}
+	return IsInComment;
+}
+
 void CKxStyleView::findLBraces(std::vector<CString>& processingCode, CString codeLine)
 {
-		int iBraces = codeLine.Find('{');
-// 		CString temp(codeLine.Mid(iBraces));
-// 		temp.Find()
-		if (iBraces != -1)  //т'{'
+	int iBraces = codeLine.Find('{');
+	if ( (iBraces != -1 ) &&  //т'{'
+		 (!IsComment(codeLine) && !IsStringFormat(codeLine)) && !IsCtrlItemInit(codeLine) )
+	{
+		if (iBraces != 0)  //normal case
 		{
-			if (iBraces != 0)  //normal case
-			{
-				processingCode.push_back(codeLine.Left(iBraces));
+			processingCode.push_back(codeLine.Left(iBraces));
 // 				processingCode.push_back(codeLine.Mid(iBraces));  //
-				findLBraces(processingCode, codeLine.Mid(iBraces));
-			}
-			else if(codeLine.GetLength() > 1)  //"{..."
-			{
-				processingCode.push_back(codeLine.Left(iBraces+1));
-// 				processingCode.push_back(codeLine.Mid(iBraces+1));  //
-				findLBraces(processingCode, codeLine.Mid(iBraces+1));
-			}
-			else // "{"
-			{
-				processingCode.push_back(codeLine.Mid(iBraces));  //
-			}
-		} 
-		else
-		{
-			processingCode.push_back(codeLine);  //all of line
+			findLBraces(processingCode, codeLine.Mid(iBraces));
 		}
+		else if(codeLine.GetLength() > 1)  //"{..."
+		{
+			processingCode.push_back(codeLine.Left(iBraces+1));
+// 				processingCode.push_back(codeLine.Mid(iBraces+1));  //
+			findLBraces(processingCode, codeLine.Mid(iBraces+1));
+		}
+		else // "{"
+		{
+			processingCode.push_back(codeLine.Mid(iBraces));  //
+		}
+	} 
+	else
+	{
+		processingCode.push_back(codeLine);  //all of line
+	}
 }
 
 void CKxStyleView::findRBraces(std::vector<CString>& processingCode, CString codeLine)
 {
 	int iBraces = codeLine.Find('}');
-	if (iBraces != -1)  //т'{'
+	if ( (iBraces != -1 ) &&  //т'{'
+		 (!IsComment(codeLine) && !IsStringFormat(codeLine)) && !IsCtrlItemInit(codeLine) )
 	{
 		if (iBraces != 0)  //normal case
 		{
@@ -192,6 +238,7 @@ void CKxStyleView::findRBraces(std::vector<CString>& processingCode, CString cod
 		{
 			processingCode.push_back(codeLine.Mid(iBraces));
 		}
+
 	}
 	else
 	{
@@ -256,12 +303,45 @@ void CKxStyleView::sortOutForIf()
 	exchangeVecStr(Code, pressingCode);
 }
 
+void CKxStyleView::cutCode()
+{
+	for (std::vector<CString>::iterator itor = ViewCode.begin(); itor != ViewCode.end(); ++itor)
+	{
+// 		if (itor->Find("#include") != -1)
+// 			Include.push_back(*itor);
+// 		else if (itor->Find("using") != -1)
+// 			UsingNameSpace.push_back(*itor);
+// 		else
+			Code.push_back(*itor);
+	}
+	ViewCode.clear();
+}
+
+void CKxStyleView::forView()
+{
+// 	ViewCode.insert(ViewCode.end(), Include.begin(), Include.end());
+// 	if(ViewCode.size()) 
+// 		ViewCode.push_back("");
+// 	ViewCode.insert(ViewCode.end(), UsingNameSpace.begin(), UsingNameSpace.end());
+// 	if(ViewCode.size()) 
+// 		ViewCode.push_back("");
+	ViewCode.insert(ViewCode.end(), Code.begin(), Code.end());
+	
+	Include.clear();
+	UsingNameSpace.clear();
+	Code.clear();
+
+	for (std::vector<CString>::iterator itor = ViewCode.begin(); itor != ViewCode.end(); ++itor)
+		*itor += "\n";
+}
+
 void CKxStyleView::OnDraw(CDC* pDC) 
 {
 	// TODO: Add your specialized code here and/or call the base class
 
 	// Loading code
-	GetDocument()->oData(Code);
+	GetDocument()->oData(ViewCode);
+ 	cutCode();
 
 	//remove codeing style
 	removeIndention();
@@ -280,13 +360,14 @@ void CKxStyleView::OnDraw(CDC* pDC)
  	removeSemicolon();
 	//2. remove { ; }
 	//removeOneLineInIndent();
-	sortOutForIf();
+	//sortOutForIf();
 	//3. add "Tab"
 	addIndention();
 /**/
+ 	forView();
 	CViewDC DC(pDC);
- 	DC.TextOut(Code);
-	GetDocument()->iData(Code);
+ 	DC.TextOut(ViewCode);
+	GetDocument()->iData(ViewCode);
 }
 
 

@@ -15,10 +15,16 @@
 
 class CKxStyleView : public CScrollView
 {
+	BOOL IsInComment;
+	std::vector<CString> ViewCode;
 	std::vector<CString> Code;
+	std::vector<CString> Include;
+	std::vector<CString> UsingNameSpace;
 private:
 // 	int  leftChar(std::vector<CString>::iterator itor, char ch);
 	void exchangeVecStr(std::vector<CString>&, std::vector<CString>&);  //交換
+	void cutCode();
+	void forView();
 
 	//移除舊的coding style
 	void removeIndention(); //移除前面和後面的空白和'\t'
@@ -30,6 +36,9 @@ private:
 	void removeSemicolon();
 
 	//移動大括號
+	BOOL IsComment(const CString& line);
+	BOOL IsStringFormat(const CString& line);
+	BOOL IsCtrlItemInit(const CString& line);
 // 	void sortOutBraces(std::vector<CString>&, CString linecode, const char&);
 	void findBraces();                                 //重新放置大括號
 	void findLBraces(std::vector<CString>&, CString);
