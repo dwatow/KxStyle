@@ -1,0 +1,20 @@
+if (a<30)
+{}
+
+if (a<30){    donothing();  }
+else{    fuckstyle();   }
+
+if (a<30){
+    donothing();
+}else{
+    fuckstyle();
+}
+
+if (a<30)
+{
+    donothing();  
+}
+else
+{
+    fuckstyle();   
+}
