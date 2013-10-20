@@ -3,40 +3,40 @@
 <pre>
 <h1>Build Log</h1>
 <h3>
---------------------Configuration: KxStyle - Win32 Release--------------------
+--------------------Configuration: KxStyle - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\1004066\LOCALS~1\Temp\RSP4E2.tmp" with contents
+Creating temporary file "C:\Users\1004066\AppData\Local\Temp\RSP9D98.tmp" with contents
 [
-/nologo /MT /W3 /GR /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Release/KxStyle.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
-"D:\GitHub\KxStyle\KxStyle.cpp"
-"D:\GitHub\KxStyle\KxStyleView.cpp"
+/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Debug/KxStyle.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\github\KxStyle\KxStyleView.cpp"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\1004066\LOCALS~1\Temp\RSP4E2.tmp" 
-Creating temporary file "C:\DOCUME~1\1004066\LOCALS~1\Temp\RSP4E3.tmp" with contents
+Creating command line "cl.exe @C:\Users\1004066\AppData\Local\Temp\RSP9D98.tmp" 
+Creating temporary file "C:\Users\1004066\AppData\Local\Temp\RSP9DA9.tmp" with contents
 [
-/nologo /subsystem:windows /incremental:no /pdb:"Release/KxStyle.pdb" /machine:I386 /out:"Release/KxStyle.exe" 
-.\Release\KxStyle.obj
-.\Release\KxStyleDoc.obj
-.\Release\KxStyleView.obj
-.\Release\MainFrm.obj
-.\Release\StdAfx.obj
-.\Release\TxtFile.obj
-.\Release\ViewDC.obj
-.\Release\KxStyle.res
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/KxStyle.pdb" /debug /machine:I386 /out:"Debug/KxStyle.exe" /pdbtype:sept 
+.\Debug\KxStyle.obj
+.\Debug\KxStyleDoc.obj
+.\Debug\KxStyleView.obj
+.\Debug\MainFrm.obj
+.\Debug\StdAfx.obj
+.\Debug\TxtFile.obj
+.\Debug\ViewDC.obj
+.\Debug\KxStyle.res
 ]
-Creating command line "link.exe @C:\DOCUME~1\1004066\LOCALS~1\Temp\RSP4E3.tmp"
+Creating command line "link.exe @C:\Users\1004066\AppData\Local\Temp\RSP9DA9.tmp"
 <h3>Output Window</h3>
 Compiling...
-KxStyle.cpp
 KxStyleView.cpp
-Generating Code...
-Linking...
+d:\github\kxstyle\syntaxforloop.h(118) : error C2664: 'IsMutiSatement' : cannot convert parameter 1 from 'const class CString *' to 'class CString *'
+        Conversion loses qualifiers
+d:\github\kxstyle\syntaxforloop.h(119) : error C2143: syntax error : missing ';' before '}'
+Error executing cl.exe.
 
 
 
 <h3>Results</h3>
-KxStyle.exe - 0 error(s), 0 warning(s)
+KxStyle.exe - 2 error(s), 0 warning(s)
 </pre>
 </body>
 </html>

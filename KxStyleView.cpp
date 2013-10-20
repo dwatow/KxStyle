@@ -9,7 +9,7 @@
 #include "MainFrm.h"
 
 #include "ViewDC.h"
-#include "syntaxFor.h"
+#include "syntaxForloop.h"
 
 
 #ifdef _DEBUG

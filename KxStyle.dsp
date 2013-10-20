@@ -153,7 +153,7 @@ SOURCE=.\StdAfx.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\syntaxFor.h
+SOURCE=.\syntaxForloop.h
 # End Source File
 # Begin Source File
 
